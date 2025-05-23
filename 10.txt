@@ -1,0 +1,82 @@
+# BCS601
+## Cloud Computing Lab Manual
+### Experiment-10: Kubernetes Engine
+
+### Set Up Google Cloud SDK and Kubernetes Tools
+=~ gcloud components install kubectl
+
+### Create Google Cloud Project
+=~ gcloud projects create PROJECT_ID --name="K8s Lab"
+=~ gcloud config set project PROJECT_ID
+
+### Enable Required APIs
+=~ gcloud services enable container.googleapis.com compute.googleapis.com
+
+### Create Kubernetes Cluster
+=~ gcloud container clusters create my-cluster \
+    --zone us-central1-a \
+    --num-nodes 2 \
+    --machine-type e2-medium
+
+### Get Cluster Credentials
+=~ gcloud container clusters get-credentials my-cluster --zone us-central1-a
+
+### Create Containerized Application
+=~ cat > Dockerfile <<EOF
+FROM node:14
+WORKDIR /usr/src/app
+COPY . .
+RUN npm install
+EXPOSE 8080
+CMD ["npm", "start"]
+EOF
+
+=~ docker build -t gcr.io/PROJECT_ID/my-app:v1 .
+=~ docker push gcr.io/PROJECT_ID/my-app:v1
+
+### Create Kubernetes Deployment
+=~ cat > deployment.yaml <<EOF
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+    spec:
+      containers:
+      - name: my-app
+        image: gcr.io/PROJECT_ID/my-app:v1
+        ports:
+        - containerPort: 8080
+EOF
+
+=~ kubectl apply -f deployment.yaml
+
+### Expose Application via Service
+=~ cat > service.yaml <<EOF
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-app-service
+spec:
+  selector:
+    app: my-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
+EOF
+
+=~ kubectl apply -f service.yaml
+
+### Verify Application
+=~ kubectl get pods
+=~ kubectl get svc

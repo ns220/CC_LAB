@@ -1,0 +1,38 @@
+# BCS601
+## Cloud Computing Lab Manual
+### Experiment-01: Creating a Virtual Machine
+
+### Step 1: Sign in to Google Cloud Console
+1. Go to https://console.cloud.google.com/
+2. Log in with your Google Account
+3. Select or create a new project
+
+### Step 2: Open Compute Engine
+=~ gcloud compute instances list
+
+### Step 3: Configure the Virtual Machine
+=~ gcloud compute instances create INSTANCE_NAME \
+    --zone=us-central1-a \
+    --machine-type=e2-medium \
+    --boot-disk-size=20GB \
+    --image-project=ubuntu-os-cloud \
+    --image-family=ubuntu-2204-lts
+
+### Step 4: Create and Deploy the VM
+=~ gcloud compute instances start INSTANCE_NAME --zone=us-central1-a
+
+### Step 5: Connect to the VM
+1. Web SSH:
+   =~ gcloud compute ssh INSTANCE_NAME --zone=us-central1-a
+
+2. Terminal SSH:
+   =~ gcloud compute ssh INSTANCE_NAME --zone=us-central1-a
+
+### Step 6: Verify and Use the VM
+=~ lscpu  # CPU details
+=~ free -h  # Memory details
+=~ sudo apt update && sudo apt install apache2 -y
+
+### Step 7: Stop or Delete the VM (Optional)
+=~ gcloud compute instances stop INSTANCE_NAME --zone=us-central1-a
+=~ gcloud compute instances delete INSTANCE_NAME --zone=us-central1-a

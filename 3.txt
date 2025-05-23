@@ -1,0 +1,55 @@
+# Step 1: Enable Required APIs
+=~ gcloud services enable cloudfunctions.googleapis.com storage.googleapis.com
+
+# Step 2: Create a Cloud Storage Bucket
+
+=~ gcloud storage buckets create BUCKET_NAME --location=us-central1
+
+# Replace BUCKET_NAME with a unique name for your bucket.
+
+# Step 3: Write the Cloud Function Code
+
+=~ mkdir gcs-function && cd gcs-function
+
+=~ nano main.py
+
+# Add the following code inside main.py:
+import functions_framework
+
+@functions_framework.cloud_event
+def gcs_trigger(cloud_event):
+    """Triggered when a file is uploaded to Cloud Storage."""
+    data = cloud_event.data
+    bucket = data["bucket"]
+    file_name = data["name"]
+    print(f"File {file_name} uploaded to {bucket}")
+
+# Save and close the file (CTRL + X, Y, Enter).
+
+# Step 4: Create a requirements.txt File
+
+=~ nano requirements.txt
+
+# Add the required dependency:
+
+functions-framework
+
+# Step 5: Deploy the Cloud Function
+
+=~ gcloud functions deploy gcs_trigger \
+--gen2 \
+--runtime=python311 \
+--region=us-central1 \
+--source=. \
+--entry-point=gcs_trigger \
+--trigger-event-filters="type=google.cloud.storage.object.v1.finalized" \
+--trigger-event-filters="bucket=BUCKET_NAME" \
+--allow-unauthenticated
+
+# Replace BUCKET_NAME with your actual Cloud Storage bucket name.
+
+# Step 6: Test the Cloud Function
+
+=~ gcloud storage cp test-file.txt gs://BUCKET_NAME
+
+=~ gcloud functions logs read gcs_trigger --region=us-central1

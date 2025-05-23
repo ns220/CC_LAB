@@ -1,0 +1,22 @@
+# BCS601 Cloud Computing Lab Manual
+## Experiment-06: Cloud SQL for MySQL
+
+### Step 1: Enable Cloud SQL API
+=~ gcloud services enable sqladmin.googleapis.com
+
+### Step 2: Create MySQL Instance
+=~ gcloud sql instances create mysql-instance \
+    --database-version=MYSQL_8_0 \
+    --tier=db-n1-standard-1 \
+    --region=us-central1
+
+### Step 3: Set Root Password
+=~ gcloud sql users set-password root \
+    --host=% --instance=mysql-instance --password=PASSWORD
+
+### Step 4: Connect to Instance
+=~ gcloud sql connect mysql-instance --user=root
+
+### Step 5: Enable HA (Optional)
+=~ gcloud sql instances patch mysql-instance \
+    --availability-type=REGIONAL

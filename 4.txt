@@ -1,0 +1,47 @@
+# BCS601 Cloud Computing Lab Manual
+## Experiment-04: App Engine Deployment
+
+### Step 1: Enable Required APIs
+=~ gcloud services enable appengine.googleapis.com
+
+### Step 2: Create App Engine Application
+=~ gcloud app create --region=us-central1
+
+### Step 3: Create Web Application
+=~ mkdir app-engine-demo && cd app-engine-demo
+=~ nano main.py
+
+# Add this Flask code:
+from flask import Flask
+app = Flask(__name__)
+@app.route('/')
+def home():
+    return 'Welcome to Google App Engine with Auto Scaling!'
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080)
+
+### Step 4: Create requirements.txt
+=~ nano requirements.txt
+# Add:
+Flask
+gunicorn
+
+### Step 5: Create app.yaml
+=~ nano app.yaml
+# Add:
+runtime: python311
+entrypoint: gunicorn -b :$PORT main:app
+automatic_scaling:
+  min_instances: 1
+  max_instances: 5
+  target_cpu_utilization: 0.65
+  target_throughput_utilization: 0.75
+
+### Step 6: Deploy Application
+=~ gcloud app deploy
+
+### Step 7: Access Application
+=~ gcloud app browse
+
+### Step 8: View Logs
+=~ gcloud app logs tail -s default
