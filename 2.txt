@@ -1,0 +1,49 @@
+Step 2: Initialize gcloud CLI 
+1. Run the following command in Cloud Shell: 
+
+~ gcloud init 
+
+2. Follow the prompts to: 
+o Authenticate your Google account 
+o Select a Google Cloud project 
+
+Step 3: Verify gcloud Setup 
+To check if gcloud is properly configured, run: 
+
+~ gcloud config list 
+
+Step 4: List Available Projects 
+
+Run the following command to view all projects associated with your Google 
+account: 
+
+~ gcloud projects list 
+
+Step 5: Set Active Project 
+To set a specific project as the active one, run: 
+
+~ gcloud config set project PROJECT_ID 
+
+Replace PROJECT_ID with your actual project ID.
+ 
+Step 6: Check Authentication Status 
+
+~ gcloud auth list 
+
+Step 7: Create a Virtual Machine (VM) Instance 
+Launch a new Compute Engine VM instance: 
+
+~ gcloud compute instances create my-vm --zone=us-central1-a 
+
+• my-vm → Name of the instance 
+• --zone=us-central1-a → Choose a different zone if needed 
+
+Step 8: List Running VM Instances 
+
+~ gcloud compute instances list 
+
+Step 9: Delete a VM Instance 
+
+~ gcloud compute instances delete my-vm 
+
+Confirm the deletion when prompted.
